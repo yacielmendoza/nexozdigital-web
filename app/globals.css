@@ -1,0 +1,531 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Nexoz Digital — Design System tokens (Tailwind CSS v4, CSS-first config)
+   In Tailwind v4 the theme lives in CSS via @theme. Each token below also
+   generates utilities, e.g. `--color-mint` → `bg-mint text-mint border-mint`.
+   ========================================================================== */
+@theme {
+  /* --- Brand palette (Brand Book v1 — degradado cian→azul→púrpura) ---
+     NOTE: los tokens mantienen sus nombres históricos para no tocar cada
+     className, pero sus valores son ahora la paleta oficial de marca:
+       mint           = cian  #03E4DE (acento primario)
+       orange-accent  = azul  #317AF7 (acento secundario)
+       purple-accent  = púrpura #8343F6 (acento terciario) */
+  --color-dark-bg: #030a1a; /* Azul Noche — primary background */
+  --color-dark-bg-2: #0b1730; /* Superficie — alternating dark section */
+  --color-dark-bg-3: #081427; /* navy tint (proof bar) */
+
+  --color-mint: #03e4de; /* cian de marca — acento primario */
+  --color-mint-soft: #4fe0db;
+  --color-mint-dim: rgba(3, 228, 222, 0.12);
+
+  --color-orange-accent: #317af7; /* azul de marca — acento secundario */
+  --color-orange-soft: #5e97ff;
+
+  --color-purple-accent: #8343f6; /* púrpura de marca — acento terciario */
+  --color-purple-soft: #9b6bf2;
+
+  --color-ink: #f2f4f8; /* primary text on dark — Blanco Hielo */
+  --color-ink-muted: #8a93a6; /* secondary text — Gris Tenue */
+
+  /* --- Loudness tiers ---
+     The site's color problem was never the hue, it was that every section
+     used the same near-black shade AND the same single mint-only spotlight,
+     so nothing was ever "quiet" or "loud" relative to anything else. Three
+     explicit tiers replace the ten near-identical section shades:
+       loud   → the biggest gradient moments (hero, services, lead, final cta)
+       quiet  → deliberate breathers, flat, no glow (proof, problem, social,
+                 about, faq)
+       medium → color returns but stays CONTAINED inside cards/panels, never
+                 bleeding page-wide (solution, process) */
+  --color-tier-loud: #030a1a;
+  --color-tier-quiet: #060b16;
+  --color-tier-medium: #0b1730;
+
+  /* --- Per-section background tones, now mapped onto the tiers above --- */
+  --color-section-hero: var(--color-tier-loud);
+  --color-section-proof: var(--color-tier-quiet);
+  --color-section-problem: var(--color-tier-quiet);
+  --color-section-solution: var(--color-tier-medium);
+  /* Services is "loud" in energy but that energy must stay CONTAINED inside
+     the cards (see .card-glow-bespoke) — the page background under them
+     stays at the medium/surface tone so cards read as sitting ON a surface,
+     not floating on void. */
+  --color-section-services: var(--color-tier-medium);
+  --color-section-process: var(--color-tier-medium);
+  --color-section-social: var(--color-tier-quiet);
+  --color-section-lead: var(--color-tier-loud);
+  --color-section-about: var(--color-tier-quiet);
+  --color-section-faq: var(--color-tier-quiet);
+
+  /* --- Typography --- */
+  --font-heading: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-body: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Custom animations (exposed as `animate-*` utilities) --- */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+  --animate-gradient-shift: gradient-shift 12s ease infinite;
+  --animate-signal-sweep: signal-sweep 9s ease-in-out infinite;
+  --animate-shimmer-sweep: shimmer-sweep 3s infinite;
+  --animate-border-shimmer: border-shimmer 4s linear infinite;
+}
+
+/* Keyframes referenced by the animation tokens above. */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    box-shadow: 0 0 24px rgba(3, 228, 222, 0.25);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 42px rgba(3, 228, 222, 0.55);
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes signal-sweep {
+  0%,
+  100% {
+    transform: translate3d(-8%, 0, 0) rotate(-18deg);
+    opacity: 0.12;
+  }
+  48% {
+    opacity: 0.6;
+  }
+  55% {
+    transform: translate3d(18%, 0, 0) rotate(-18deg);
+    opacity: 0.32;
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes border-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* ==========================================================================
+   Base layer
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+  --background: #030a1a;
+  --foreground: #f2f4f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Lenis drives the smooth scroll; keep native fallback for no-JS. */
+  scroll-behavior: smooth;
+}
+
+/* When Lenis is active it adds `.lenis` to <html>; disable native smoothing
+   so the two don't fight each other. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+::selection {
+  background: rgba(3, 228, 222, 0.28);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Reusable component classes (used across sections)
+   ========================================================================== */
+
+/* ==========================================================================
+   LIQUID GLASS system
+   Apple-style translucent, refractive glass. The blur/saturate is applied via
+   Tailwind `backdrop-blur-*` / `backdrop-saturate-*` utilities ON the element
+   (Tailwind v4's Lightning CSS strips hand-authored backdrop-filter from plain
+   CSS rules, so it must ride the utility path). Everything else — the layered
+   translucent fill, the bright specular top rim, the depth shadow — lives here
+   because those survive the build intact.
+
+   The signature of "liquid glass" vs flat glassmorphism:
+     1. a gradient fill (lighter at the top, so it looks lit from above),
+     2. a crisp bright inner top highlight (the specular rim),
+     3. a soft outer shadow so the surface reads as floating,
+     4. a faint inner bottom shade for thickness/refraction.
+   ========================================================================== */
+.glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.045) 45%,
+    rgba(255, 255, 255, 0.025) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
+    inset 0 -14px 22px -18px rgba(0, 0, 0, 0.5),
+    0 12px 34px -14px rgba(0, 0, 0, 0.55);
+}
+
+/* Prominent surfaces — lead form, floating stat chips. Brighter rim, deeper
+   float shadow, so they read as sitting above everything else. */
+.glass-strong {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.07) 45%,
+    rgba(255, 255, 255, 0.035) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.35),
+    inset 0 -18px 30px -22px rgba(0, 0, 0, 0.55),
+    0 20px 50px -16px rgba(0, 0, 0, 0.65);
+}
+
+/* Small interactive controls — buttons, language toggle, pills. */
+.glass-pill {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+    0 6px 18px -6px rgba(0, 0, 0, 0.45);
+}
+.glass-pill:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+/* Form fields — glass, but restrained so typed text stays high-contrast. */
+.glass-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Navbar glass — a persistent frosted bar. Kept navy-tinted (not pure white
+   glass) so nav text stays legible over the busy hero behind it; deepens
+   once scrolled. */
+.glass-nav {
+  background: linear-gradient(
+    180deg,
+    rgba(11, 23, 48, 0.55) 0%,
+    rgba(3, 10, 26, 0.4) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+    0 10px 34px -14px rgba(0, 0, 0, 0.5);
+}
+.glass-nav-scrolled {
+  background: linear-gradient(
+    180deg,
+    rgba(11, 23, 48, 0.82) 0%,
+    rgba(3, 10, 26, 0.72) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+    0 14px 40px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Eyebrow badge — animated shimmer running along the border. */
+.eyebrow-shimmer {
+  position: relative;
+  background:
+    linear-gradient(90deg, transparent, rgba(3, 228, 222, 0.6), transparent)
+      border-box;
+  border: 1px solid transparent;
+}
+.eyebrow-shimmer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(3, 228, 222, 0.15),
+    rgba(3, 228, 222, 0.8),
+    rgba(3, 228, 222, 0.15)
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-border-shimmer);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Primary CTA — light sweep crossing the button on a loop. */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  animation: var(--animate-shimmer-sweep);
+}
+
+/* Service card cursor-spotlight (mouse position set via inline style vars). */
+.service-card {
+  position: relative;
+  isolation: isolate;
+}
+.service-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    200px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(3, 228, 222, 0.08),
+    transparent 70%
+  );
+  z-index: -1;
+}
+.service-card:hover::after {
+  opacity: 1;
+}
+
+/* Animated gradient backdrop for the final CTA. */
+.gradient-animated {
+  background: linear-gradient(135deg, #030a1a 0%, #0b1730 50%, #030a1a 100%);
+  background-size: 300% 300%;
+  animation: var(--animate-gradient-shift);
+}
+
+/* Decorative signal lines in the hero background. */
+.signal-line {
+  animation: var(--animate-signal-sweep);
+  opacity: 0.46;
+}
+.signal-line-delay {
+  animation-delay: -4s;
+}
+
+/* Cursor-following glow used by service cards (driven by JS custom props). */
+.card-glow {
+  position: relative;
+  isolation: isolate;
+}
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(3, 228, 222, 0.18),
+    transparent 60%
+  );
+  z-index: -1;
+}
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* Bespoke per-card gradient — Services replaces the single shared spotlight
+   above with a distinct gradient PER CARD (set via inline --card-gradient),
+   so five cards in a row don't read as the same container five times. */
+.card-glow-bespoke {
+  position: relative;
+  isolation: isolate;
+}
+.card-glow-bespoke::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: var(--card-gradient);
+  z-index: -1;
+}
+.card-glow-bespoke:hover::before {
+  opacity: 1;
+}
+
+/* Loud-tier gradient mesh — the "biggest gradient moment" background for
+   hero/services/lead/final-cta. Uses all three brand hues at once (existing
+   spotlights were mint-only and topped out at 0.18 opacity; this is the
+   section-scale equivalent, meant to sit once per loud section, never
+   stacked with a second one). */
+.gradient-mesh-loud {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(3, 228, 222, 0.28), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 90% 10%, rgba(131, 67, 246, 0.24), transparent 60%),
+    radial-gradient(ellipse 60% 80% at 50% 120%, rgba(49, 122, 247, 0.20), transparent 60%);
+}
+
+/* Quiet-tier framing — a deliberate breather. Flat background (no glow, no
+   mesh), one hairline top border so the section still reads as a distinct
+   band rather than bleeding into its neighbors. */
+.tier-quiet {
+  background: var(--color-tier-quiet);
+  border-top: 1px solid rgba(242, 244, 248, 0.06);
+}
+
+/* Stronger glass for floating chip/stat elements (the Nuvio "data card
+   overlapping the hero visual" motif) — deeper blur, brighter fill/border
+   and a real drop shadow so it reads as floating above the scene, not
+   just another translucent panel like the lighter `.glass` above. */
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+}
+
+/* Gradient-border CTA — a 1.5px brand-gradient ring around the button
+   instead of a flat solid fill, so the loudest CTAs (hero + final CTA)
+   visually rhyme with the loud gradient-mesh background behind them. */
+.btn-gradient-ring {
+  position: relative;
+  z-index: 0;
+}
+.btn-gradient-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, #03e4de 0%, #317af7 48%, #8343f6 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ==========================================================================
+   Accessibility — honor reduced-motion preference
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ===== ACCESIBILIDAD: Focus Visible ===== */
+/* Focus visible global para navegación por teclado (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid var(--color-mint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Skip link para navegación por teclado (WCAG 2.4.1) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-mint);
+  color: var(--color-dark-bg);
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Contraste mínimo garantizado para texto secundario (WCAG AA) */
+.text-muted-accessible {
+  color: #9ba8bb; /* ratio 4.6:1 sobre #030A1A */
+}
