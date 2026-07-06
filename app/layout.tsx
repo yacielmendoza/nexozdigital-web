@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
@@ -18,6 +18,16 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"]
+});
+
+// Editorial accent (Brand Book §4.0): italic 400 only, 1-2 words of emotional
+// emphasis inside display headlines — never body, UI, or logo-adjacent.
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-instrument-serif",
+  weight: ["400"],
+  style: ["italic"]
 });
 
 const SITE_URL = "https://nexozdigital.com";
@@ -127,7 +137,10 @@ export default function RootLayout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html
+      lang="es"
+      className={`${spaceGrotesk.variable} ${inter.variable} ${instrumentSerif.variable}`}
+    >
       <body>
         <a href="#main-content" className="skip-link">
           Saltar al contenido principal

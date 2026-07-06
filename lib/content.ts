@@ -131,7 +131,12 @@ export type Copy = {
 
   // --- Section 10 — Final CTA ---
   finalCta: {
-    headline: string;
+    /** everything before the emotional emphasis word(s) */
+    headlineLead: string;
+    /** the 1-2 word emotional payoff, rendered in the Instrument Serif
+     *  editorial accent (Brand Book §4.0) — keep this short and load-bearing;
+     *  if the headline reads fine without it, it doesn't belong here. */
+    headlineAccent: string;
     subhead: string;
     cta: string;
     note: string;
@@ -473,7 +478,8 @@ export const copy: Record<Language, Copy> = {
     },
 
     finalCta: {
-      headline: "Tu próximo cliente te está buscando ahora mismo.",
+      headlineLead: "Tu próximo cliente te está buscando",
+      headlineAccent: "ahora mismo.",
       subhead:
         "Te decimos exactamente qué está pasando con tu presencia digital — sin costo, sin letra pequeña, sin compromiso.",
       cta: "Sí, quiero mi Diagnóstico",
@@ -481,7 +487,7 @@ export const copy: Record<Language, Copy> = {
     },
 
     footer: {
-      tagline: "Presencia digital que conecta tu negocio con tu ciudad.",
+      tagline: "Conectamos tu negocio con su siguiente nivel.",
       columns: [
         {
           title: "Servicios",
@@ -824,7 +830,8 @@ export const copy: Record<Language, Copy> = {
     },
 
     finalCta: {
-      headline: "Your next customer is searching for you right now.",
+      headlineLead: "Your next customer is searching for you",
+      headlineAccent: "right now.",
       subhead:
         "We'll tell you exactly what's happening with your online presence — no cost, no fine print, no obligation.",
       cta: "Yes, Send My Diagnosis",
@@ -832,7 +839,7 @@ export const copy: Record<Language, Copy> = {
     },
 
     footer: {
-      tagline: "Digital presence that connects your business with your city.",
+      tagline: "Connecting Businesses to Their Next Level.",
       columns: [
         {
           title: "Services",

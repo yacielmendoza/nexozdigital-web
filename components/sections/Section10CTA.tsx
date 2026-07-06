@@ -38,7 +38,10 @@ export function Section10CTA() {
 
       <Reveal className="relative mx-auto max-w-3xl text-center">
         <h2 className="text-4xl font-extrabold leading-[1.08] tracking-[-0.03em] text-white sm:text-6xl">
-          {t.finalCta.headline}
+          {t.finalCta.headlineLead}{" "}
+          <span className="editorial-accent text-[1.05em]">
+            {t.finalCta.headlineAccent}
+          </span>
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-ink-muted">
           {t.finalCta.subhead}
